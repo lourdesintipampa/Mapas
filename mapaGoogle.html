@@ -18,6 +18,7 @@
 	</style>
 
 <script type="text/javascript">
+
 var inicio = function (){
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 0;
 OpenLayers.DOTS_PER_INCH = 90.71428571428572;
@@ -56,8 +57,8 @@ opciones = {
 // BoundingBox
 map = new OpenLayers.Map('map',opciones);
 
+//FONDO DE MAPAS
 osm = new OpenLayers.Layer.OSM ("OpenStreetMap");
-
 //CREAMOS EL LAYER QUE COTERNDRA EL MAPA DE GOOGLE
 mapgoogleS = new OpenLayers.Layer.Google("Mapa Satelital",{type: google.maps.MapTypeId.SATELLITE });
 mapgoogleH = new OpenLayers.Layer.Google("Mapa HIbrido",{type: google.maps.MapTypeId.HYBRID});
@@ -66,7 +67,24 @@ mapgoogleR = new OpenLayers.Layer.Google("mapa de Caminos",{type: google.maps.Ma
 map.addLayers([osm, mapgoogleS, mapgoogleH, mapgoogleR]);
 //map.addLayer(mapgoogle);
 
+// CAPAS O LAYER
+////////////////////////////////////
+var layerWMS= new OpenLayers.Layer.WMS(
 
+		"Departamentos nombre del layer",
+		"http://geo.gob.bo/geoserver/wms",
+		{
+			layer:'fondos:departamento1',
+			transparent:true
+		},
+		{
+			'displayInLayerSwitcher':true
+		}
+
+	);
+map.addLayers(layerWMS);
+
+///////////////////////////////////////////////
 var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
 // setscenter  necesita un punto o cordenada  y la proyeccion
 map.setCenter(
