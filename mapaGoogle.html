@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mapa Google </title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+	<script type="text/javascript" src="ol2/OpenLayers.js"></script>
+	<style type="text/css">
+		body{
+			height: 100%;
+			width: 100%;
+		}
+		#map{
+			height: 700px;
+			width: 700px;
+			z-index: 99;
+		}
+	</style>
+
+<script type="text/javascript">
+var inicio = function (){
+OpenLayers.IMAGE_RELOAD_ATTEMPTS = 0;
+OpenLayers.DOTS_PER_INCH = 90.71428571428572;
+OpenLayers.Util.onImageLoadErrorColor= 'transparent';
+
+
+var map, mapgoogle,  opciones, proyeccion, resolucion,zoom, controlTouch, controlNavegacion,controlZoom;
+
+//creamos una segunda capa 
+var controlLayers;
+//··························
+// la proyeccion que se utiliza normalmente
+proyeccion = new OpenLayers.Projection("EPSG:4326"); //EPSG:900913
+// como se creo la capa
+resolucion = 196543.0339;
+// con google map no es igual
+zoom = 20;
+// esta parte es para la celulares
+controlTouch = new OpenLayers.Control.TouchNavigation({dragPanOptions:{enableKinetic:true}});
+controlNavegacion = new OpenLayers.Control.Navigation();
+controlZoom = new OpenLayers.Control.Zoom();
+//segunda capa
+controlLayers = new OpenLayers.Control.LayerSwitcher();
+//.....................
+opciones = {
+	units: 'm',
+	projection: proyeccion,
+	maxResolution: resolucion,
+	numZoomLevels: zoom,
+	//adiciono la segunda capa contrallayer
+	controls: [controlNavegacion,controlZoom, controlLayers],
+	// maxExtend
+
+}
+
+// BoundingBox
+map = new OpenLayers.Map('map',opciones);
+
+osm = new OpenLayers.Layer.OSM ("OpenStreetMap");
+
+//CREAMOS EL LAYER QUE COTERNDRA EL MAPA DE GOOGLE
+mapgoogleS = new OpenLayers.Layer.Google("Mapa Satelital",{type: google.maps.MapTypeId.SATELLITE });
+mapgoogleH = new OpenLayers.Layer.Google("Mapa HIbrido",{type: google.maps.MapTypeId.HYBRID});
+mapgoogleR = new OpenLayers.Layer.Google("mapa de Caminos",{type: google.maps.MapTypeId.ROAD });
+
+map.addLayers([osm, mapgoogleS, mapgoogleH, mapgoogleR]);
+//map.addLayer(mapgoogle);
+
+
+var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
+// setscenter  necesita un punto o cordenada  y la proyeccion
+map.setCenter(
+	region.getCenterLonLat().transform(
+		new OpenLayers.Projection("EPSG:900913"), // proyecciìon inicial
+		map.getProjectionObject()	// proyección final
+		),
+	6	// nivel de acercamiento
+	);
+}
+window.onload= inicio;
+</script>
+
+</head>
+<body>
+<div id="map"></div>
+</body>
+</html>
